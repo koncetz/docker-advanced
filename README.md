@@ -37,4 +37,4 @@
 4) Deploy docker stack:
    `docker stack deploy -c docker-stack.yml app`
 5) Run `docker swarm join --token XXX 1x.1x.1x.1x:zzzz` in instance 2 and 3
-6) Browse: http://pma.docker.angular.id and http://web.docker.angular.id
+6) Browse: http://web.angular.id and http://pma.angular.id
