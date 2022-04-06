@@ -6,10 +6,6 @@
    ```
    docker network create --driver overlay --attachable proxy
    ```
-   After that copy incoming response to be run in instance 2 and 3:
-   ```
-   docker swarm join --token XXX 1x.1x.1x.1x:zzzz
-   ```
 2) Build image **mysql**, **phpmyadmin**, **web**, and **proxy**
    ```
    docker image build -f mysql.Dockerfile -t koncetz/mysql-custom .
@@ -35,6 +31,10 @@
 1) Create 3 VM's in GCP, in first VM, init the docker swarm via SSH:
    ```
    docker swarm init
+   ```
+   After that copy incoming response to be run in instance 2 and 3:
+   ```
+   docker swarm join --token XXX 1x.1x.1x.1x:zzzz
    ```
 2) Clone repository to each VM via SSH:
    ```
