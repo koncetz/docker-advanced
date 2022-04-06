@@ -4,6 +4,8 @@
 
 1) Create overlay network for proxy:
    `docker network create --driver overlay --attachable proxy`
+   After that copy incoming response to be run in instance 2 and 3:
+   `docker swarm join --token XXX 1x.1x.1x.1x:zzzz`
 2) Build image **mysql**, **phpmyadmin**, **web**, and **proxy**
    ```
    docker image build -f mysql.Dockerfile -t koncetz/mysql-custom .
@@ -34,4 +36,5 @@
    `cd docker-advanced`
 4) Deploy docker stack:
    `docker stack deploy -c docker-stack.yml app`
-5) Browse: http://pma.docker.angular.id and http://web.docker.angular.id
+5) Run `docker swarm join --token XXX 1x.1x.1x.1x:zzzz` in instance 2 and 3
+6) Browse: http://pma.docker.angular.id and http://web.docker.angular.id
