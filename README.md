@@ -3,9 +3,13 @@
 ### **Test in Local**
 
 1) Create overlay network for proxy:
-   `docker network create --driver overlay --attachable proxy`
+   ```
+   docker network create --driver overlay --attachable proxy
+   ```
    After that copy incoming response to be run in instance 2 and 3:
-   `docker swarm join --token XXX 1x.1x.1x.1x:zzzz`
+   ```
+   docker swarm join --token XXX 1x.1x.1x.1x:zzzz
+   ```
 2) Build image **mysql**, **phpmyadmin**, **web**, and **proxy**
    ```
    docker image build -f mysql.Dockerfile -t koncetz/mysql-custom .
@@ -29,12 +33,20 @@
 ### **Deploy in Cloud**
 
 1) Create 3 VM's in GCP, in first VM, init the docker swarm via SSH:
-   `docker swarm init`
+   ```
+   docker swarm init
+   ```
 2) Clone repository to each VM via SSH:
-   `git clone https://github.com/koncetz/docker-advanced.git`
+   ```
+   git clone https://github.com/koncetz/docker-advanced.git
+   ```
 3) Enter repo directory:
-   `cd docker-advanced`
+   ```
+   cd docker-advanced
+   ```
 4) Deploy docker stack:
-   `docker stack deploy -c docker-stack.yml app`
+   ```
+   docker stack deploy -c docker-stack.yml app
+   ``` 
 5) Run `docker swarm join --token XXX 1x.1x.1x.1x:zzzz` in instance 2 and 3
 6) Browse: http://web.angular.id and http://pma.angular.id
