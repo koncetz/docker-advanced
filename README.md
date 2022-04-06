@@ -3,7 +3,7 @@
 ### **Test in Local**
 
 1) Create overlay network for proxy:
-   `docker network create --driver overlay proxy`
+   `docker network create --driver overlay --attachable proxy`
 2) Build image **mysql**, **phpmyadmin**, **web**, and **proxy**
    ```
    docker image build -f mysql.Dockerfile -t koncetz/mysql-custom .
