@@ -1,0 +1,127 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: koncetz/mysql-custom
+    ports:
+      - 3306:3306
+    secrets:
+      - db_root_userpass
+      - db_name
+      - db_username
+      - db_userpass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - default
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_userpass
+      MYSQL_DATABASE_FILE: /run/secrets/db_name
+      MYSQL_USER_FILE: /run/secrets/db_username
+      MYSQL_PASSWORD_FILE: /run/secrets/db_userpass
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: koncetz/phpmyadmin-custom
+    ports:
+      - 8080:80
+    secrets:
+      - db_root_userpass
+    volumes:
+      - phpmyadmin_data:/etc/phpmyadmin
+    networks:
+      - default
+      - proxy
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_userpass
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-Ss", "http://localhost/robots.txt" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web:
+    depends_on:
+      - mysql
+    image: koncetz/web-custom
+    ports:
+      - 8000:80
+    networks:
+      - default
+      - proxy
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  proxy:
+    depends_on:
+      - web
+      - phpmyadmin
+    image: koncetz/proxy-custom
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - proxy
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "service", "nginx", "status" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data: {}
+  phpmyadmin_data: {}
+
+networks:
+  default:
+    external: false
+  proxy:
+    external: true
+
+secrets:
+  db_root_userpass:
+    file: ./secrets/db_root_userpass.txt
+  db_name:
+    file: ./secrets/db_name.txt
+  db_username:
+    file: ./secrets/db_username.txt
+  db_userpass:
+    file: ./secrets/db_userpass.txt
