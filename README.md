@@ -33,5 +33,5 @@
 3) Enter repo directory:
    `cd docker-advanced`
 4) Deploy docker stack:
-   `docker stack deploy -c docker-compose-stack.yml app`
+   `docker stack deploy -c docker-stack.yml app`
 5) Browse: http://pma.docker.angular.id and http://web.docker.angular.id
